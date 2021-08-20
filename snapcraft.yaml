@@ -1,5 +1,5 @@
 name: docker-ls
-version:  0.3.2
+version:  0.5.1
 summary: a browser for Docker registries
 description: |
     `docker-ls` is a browser for docker registries.  Output is either
@@ -9,7 +9,9 @@ description: |
 
     https://github.com/mayflower/docker-ls#usage
 
-base: core18
+    This snap also includes `docker-rm`.  For ease of use, consider
+    running `sudo snap alias docker-ls.docker-rm docker-rm`.
+base: core20
 
 confinement: strict
 grade: stable
@@ -22,16 +24,24 @@ apps:
     docker-ls:
         command: bin/docker-ls
         adapter: none
+    docker-rm:
+        command: bin/docker-rm
+        adapter: none
 
 parts:
     docker-ls:
         plugin: go
         source: .
-        go-importpath: github.com/mayflower/docker-ls
         build-environment:
             # https://github.com/golang/go/issues/33840
             - CGO_ENABLED: "0"
+        build-packages:
+            - git  # for `go generate`
         build-snaps:
-            - go #/1.11/stable
+            - go
+        override-build: |
+          cd lib && go generate
+          snapcraftctl build
         prime:
             - bin/docker-ls
+            - bin/docker-rm
