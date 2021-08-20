@@ -1,0 +1,37 @@
+name: docker-ls
+version:  0.3.2
+summary: a browser for Docker registries
+description: |
+    `docker-ls` is a browser for docker registries.  Output is either
+    encoded as YAML or as JSON.
+
+    For further information, please visit:
+
+    https://github.com/mayflower/docker-ls#usage
+
+base: core18
+
+confinement: strict
+grade: stable
+
+plugs:
+    home:
+    network:
+
+apps:
+    docker-ls:
+        command: bin/docker-ls
+        adapter: none
+
+parts:
+    docker-ls:
+        plugin: go
+        source: .
+        go-importpath: github.com/mayflower/docker-ls
+        build-environment:
+            # https://github.com/golang/go/issues/33840
+            - CGO_ENABLED: "0"
+        build-snaps:
+            - go #/1.11/stable
+        prime:
+            - bin/docker-ls
