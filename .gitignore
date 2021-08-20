@@ -1,3 +1,6 @@
+*~
+*.snap
+*.snap.xdelta3
 build
 docker-ls.debug
 lib/dynamic_version.go
